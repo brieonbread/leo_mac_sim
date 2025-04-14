@@ -146,8 +146,8 @@ def find_angle_for_magnitude_np(thetas, magnitudes, target_magnitude, threshold)
 
 
 def compute_gains(steering_theta, steering_phi):
-    Nx = 30 # number of elements in the x-direction
-    Ny = 20 # number of elements in the y-direction
+    Nx = 60 # number of elements in the x-direction
+    Ny = 60 # number of elements in the y-direction
     dx = 0.5  # spacing between elements in the x-direction (in wavelengths)
     dy = dx  # spacing between elements in the y-direction (in wavelengths)
     freq_GHz = 10 # frequency (GHz)
@@ -211,8 +211,11 @@ def compute_gains(steering_theta, steering_phi):
     # theta_deg = np.linspace(-90, 90, 181)
     # phi_deg = np.linspace(-90, 90, 181)
 
-    theta_deg = np.linspace(theta0-10, theta0+10, 41*40) # CHANGE ME
-    phi_deg = np.linspace(phi0-10, phi0+10, 41*40) # CHANGE ME
+    # theta_deg = np.linspace(theta0-10, theta0+10, 41*40) # CHANGE ME
+    # phi_deg = np.linspace(phi0-10, phi0+10, 41*40) # CHANGE ME
+
+    theta_deg = np.linspace(theta0-10, theta0+10, 41*4) # CHANGE ME
+    phi_deg = np.linspace(phi0-10, phi0+10, 41*4) # CHANGE ME
 
     theta = np.deg2rad(theta_deg)
     phi = np.deg2rad(phi_deg)
@@ -270,7 +273,7 @@ if __name__ == "__main__":
     s_i_ratio = 27.781/27.677 # S/I=1.003757632691
     beamwidth = 4.602
 
-    steering_thetas = [70]
+    steering_thetas = [0]
     # steering_thetas = [0, 10, 20, 30, 40, 50, 60, 70] # CHANGE ME
     min_separation = []
 
