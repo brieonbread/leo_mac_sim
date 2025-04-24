@@ -1,6 +1,7 @@
 from scipy.constants import pi, c
 import numpy as np
 import matplotlib.pyplot as plt
+import scienceplots
 
 
 def steering_vector(k, xv, yv, theta_deg, phi_deg):
@@ -146,8 +147,8 @@ def find_angle_for_magnitude_np(thetas, magnitudes, target_magnitude, threshold)
 
 
 def compute_gains(steering_theta, steering_phi):
-    Nx = 60 # number of elements in the x-direction
-    Ny = 60 # number of elements in the y-direction
+    Nx = 40 # number of elements in the x-direction
+    Ny = 30 # number of elements in the y-direction
     dx = 0.5  # spacing between elements in the x-direction (in wavelengths)
     dy = dx  # spacing between elements in the y-direction (in wavelengths)
     freq_GHz = 10 # frequency (GHz)
@@ -208,14 +209,14 @@ def compute_gains(steering_theta, steering_phi):
                                 phi_deg=phi0)
     
     # Define observation angles
-    # theta_deg = np.linspace(-90, 90, 181)
-    # phi_deg = np.linspace(-90, 90, 181)
+    theta_deg = np.linspace(-90, 90, 181*2)
+    phi_deg = np.linspace(-90, 90, 181*2)
 
     # theta_deg = np.linspace(theta0-10, theta0+10, 41*40) # CHANGE ME
     # phi_deg = np.linspace(phi0-10, phi0+10, 41*40) # CHANGE ME
 
-    theta_deg = np.linspace(theta0-10, theta0+10, 41*4) # CHANGE ME
-    phi_deg = np.linspace(phi0-10, phi0+10, 41*4) # CHANGE ME
+    # theta_deg = np.linspace(theta0-10, theta0+10, 41*4) # CHANGE ME
+    # phi_deg = np.linspace(phi0-10, phi0+10, 41*4) # CHANGE ME
 
     theta = np.deg2rad(theta_deg)
     phi = np.deg2rad(phi_deg)
@@ -273,10 +274,37 @@ if __name__ == "__main__":
     s_i_ratio = 27.781/27.677 # S/I=1.003757632691
     beamwidth = 4.602
 
-    steering_thetas = [0]
+    steering_thetas = [0, 30, 60]
     # steering_thetas = [0, 10, 20, 30, 40, 50, 60, 70] # CHANGE ME
     min_separation = []
 
+    plt.style.use('default')  
+    # plt.style.use(['science', 'ieee'])  
+
+    # # 2) immediately disable LaTeX typesetting:
+    # plt.rcParams.update({
+    #     "text.usetex": False,          # ← turn off external LaTeX
+    #     "mathtext.fontset": "stix",    # ← optional: choose a math font
+    #     "font.family": "serif",        # ← matches typical SciencePlots serif look
+    # })
+
+    # plt.style.use(['science', 'ieee'])  
+    # plt.rcParams.update({
+    # "text.usetex": False,          # ← turn off external LaTeX
+    # "mathtext.fontset": "stix",    # ← optional: choose a math font
+    # "font.family": "serif",        # ← matches typical SciencePlots serif look
+    # "font.size": 5,           # base font size
+    # "axes.titlesize": 12,      # title size
+    # "axes.labelsize": 10,      # x/y label size
+    # "xtick.labelsize": 9,      # x-tick label size
+    # "ytick.labelsize": 9,      # y-tick label size
+    # "legend.fontsize": 9,      # legend text
+    # "figure.titlesize": 5
+    # })
+
+
+
+    plt.figure()
     for theta in steering_thetas:
         print(f"Processing theta = {theta}")
         # keep shifting the user 2 beam pattern over incrementally until they intersect at the target
@@ -329,28 +357,29 @@ if __name__ == "__main__":
         # print("min distance btw users (normalized)", best_shift/beamwidth)
         
         best_shift = 2.388438
-        plt.figure()
-        plt.plot(thetas, gains, label='Array Gain (User 1)')
-        plt.plot(thetas+best_shift, gains, label='Array Gain (User 2)')
+        
+        plt.plot(thetas, gains, label=f'Steering Angle: theta={theta}°', linestyle="-")
+        # plt.plot(thetas+best_shift, gains, label='Array Gain (User 2)')
         plt.xlabel('Theta (deg)')
         plt.ylabel('Array Gain (dBi)')
-        plt.title(f'Steering Angle: theta={theta}°, phi={0.0}; Array Gain: Theta Cut (Phi = ' + str(0.0) + '°)')
+        plt.title(f'40x30 Phased Array Beampattern over range of steering angles \n Theta Cut (Phi = ' + str(0.0) + '°)')
         plt.grid(True)
         # plt.ylim(lower_limit_theta, peak_value_theta+5)
         plt.xlim([np.min(thetas), np.max(thetas)])
         plt.legend()
-        # plt.xlim([theta0-10, theta0+10])
-        # plt.xticks(np.arange(theta0-10, theta0+10, 1))
+        plt.xlim([-90, 90])
+        plt.xticks(np.arange(-90, 91, 10))
         # plt.yticks(np.arange(lower_limit_theta, peak_value_theta+5,2))
-        plt.axvline(x=theta, color='black', linestyle='--', label='Steer Angle (Theta)')
-        plt.show()
-
-    print("steering_thetas", steering_thetas)
-    print("min_separation", min_separation)
-    plt.plot(steering_thetas, min_separation)
-    plt.xlabel("steering angle (theta)")
-    plt.ylabel("min user separation (normalized by HPBW @ boresight)")
+        # plt.axvline(x=theta, linestyle='--', label='Steer Angle (Theta)')
+        
     plt.show()
+
+    # print("steering_thetas", steering_thetas)
+    # print("min_separation", min_separation)
+    # plt.plot(steering_thetas, min_separation)
+    # plt.xlabel("steering angle (theta)")
+    # plt.ylabel("min user separation (normalized by HPBW @ boresight)")
+    # plt.show()
         
 
 
